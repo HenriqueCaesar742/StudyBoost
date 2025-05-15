@@ -47,7 +47,7 @@ app.post('/cadastro', async (req, res) => {
       }
       return res.send('Erro ao cadastrar.');
     }
-    res.send('Usuário cadastrado com sucesso!');
+    res.redirect('/dashboard/index.html');
   });
 } catch (error) {
   console.error(error);
