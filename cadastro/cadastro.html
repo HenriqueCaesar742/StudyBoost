@@ -1,21 +1,83 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https>//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="style-cadastro/cadastro.css" media="all">
-  <link rel="stylesheet" href="style-cadastro/cadastro-querey.css" media="screen">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro</title>
+  <link rel="stylesheet" href="style-cadastro/cadastro.css" />
+  <link rel="stylesheet" href="style-cadastro/cadastro-querey.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
-  <h1>Cadastro de Usuário</h1>
-  <form action="/cadastro" method="POST">
-    <input type="text" name="nome" placeholder="Nome" required><br>
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="password" name="senha" placeholder="Senha" required><br>
-    <input type="password" name="confirmarSenha" placeholder="Confirmar Senha" required><br>
-    <button type="submit">Cadastrar</button>
-  </form>
+  <main class="conteiner__principal">
+    <section class="login-container">
+      <h1>Cadastro</h1>
+      <form id="registerForm" action="/cadastro" method="POST">
+        <div class="input-container">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="username" name="nome" placeholder="Nome de usuário" required />
+        </div>
+
+        <div class="input-container">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="email" name="email" placeholder="E-mail" required />
+        </div>
+
+        <div class="input-container">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="password" name="senha" placeholder="Senha" required />
+          <span class="toggle-password" onclick="togglePassword('password', this)">
+            <i class="fa-solid fa-eye"></i>
+          </span>
+        </div>
+
+        <div class="input-container">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="confirmPassword" name="confirmarSenha" placeholder="Confirme a senha" required />
+          <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">
+            <i class="fa-solid fa-eye"></i>
+          </span>
+        </div>
+
+        <p id="error-message" class="error-message" style="display:none; color:red;"></p>
+
+        <button type="submit">Cadastrar</button>
+      </form>
+      <p>Já tem uma conta? <a href="../login/login.html">Entrar agora</a></p>
+    </section>
+
+    <div class="imagem">
+      <img src="imagem-cadastro/pessoa-ao-lado.png" alt="Pessoa ao lado" />
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", function (event) {
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const errorMessage = document.getElementById("error-message");
+
+      if (password !== confirmPassword) {
+        event.preventDefault();
+        errorMessage.textContent = "As senhas não coincidem!";
+        errorMessage.style.display = "block";
+      } else {
+        errorMessage.style.display = "none";
+      }
+    });
+
+    function togglePassword(inputId, iconSpan) {
+      const input = document.getElementById(inputId);
+      const icon = iconSpan.querySelector("i");
+
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    }
+  </script>
 </body>
 </html>
