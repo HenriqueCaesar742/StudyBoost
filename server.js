@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,6 +19,9 @@ db.connect(err => {
   if (err) throw err;
   console.log('Conectado ao MySQL');
 });
+
+
+app.use('/cadastro',express.static(__dirname + '/cadastro'));
 
 // Rota para cadastro
 app.post('/cadastro', async (req, res) => {
@@ -46,3 +49,4 @@ app.post('/cadastro', async (req, res) => {
 app.listen(3000, () => {
   console.log('Servidor rodando em http://localhost:3000');
 });
+
