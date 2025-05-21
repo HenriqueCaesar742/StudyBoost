@@ -1,0 +1,28 @@
+{
+  "name": "studyboost",
+  "version": "1.0.0",
+  "description": "Plataforma para Estudo Direcionado",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HenriqueCaesar742/StudyBoost.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HenriqueCaesar742/StudyBoost/issues"
+  },
+  "homepage": "https://github.com/HenriqueCaesar742/StudyBoost#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1"
+  }
+}
