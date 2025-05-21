@@ -7,11 +7,9 @@ const path = require('path');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname))); // Servir arquivos estáticos (HTML, CSS, JS, imagens)
 
-// Middleware para servir arquivos estáticos
-app.use(express.static(path.join(__dirname))); // Serve imagens, CSS, JS, etc.
-
-// Conexão com banco de dados
+// Conexão com o MySQL
 const db = mysql.createConnection({
   host: 'localhost',
   user: process.env.DB_USER,
@@ -24,12 +22,12 @@ db.connect(err => {
   console.log('Conectado ao MySQL');
 });
 
-// Exibir index.html ao acessar "/"
+// Rota principal: exibir index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Rota para cadastro
+// Rota de cadastro
 app.post('/cadastro', async (req, res) => {
   const { nome, email, senha, confirmarSenha } = req.body;
 
@@ -38,24 +36,51 @@ app.post('/cadastro', async (req, res) => {
   }
 
   try {
-  const hash = await bcrypt.hash(senha, 10);
-  const sql = 'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)';
-  db.query(sql, [nome, email, hash], (err, result) => {
-    if (err) {
-      if (err.code === 'ER_DUP_ENTRY') {
-        return res.send('Email já cadastrado.');
+    const hash = await bcrypt.hash(senha, 10);
+    const sql = 'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)';
+    db.query(sql, [nome, email, hash], (err, result) => {
+      if (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.send('Email já cadastrado.');
+        }
+        return res.send('Erro ao cadastrar.');
       }
-      return res.send('Erro ao cadastrar.');
-    }
-    res.send('Usuário cadastrado com sucesso!');
-  });
-} catch (error) {
-  console.error(error);
-  res.send('Erro ao processar senha');
-}
+      // Redireciona para o dashboard após cadastro bem-sucedido
+      res.redirect('/dashboard/index.html');
+    });
+  } catch (error) {
+    console.error(error);
+    res.send('Erro ao processar senha');
+  }
 });
 
-// Iniciar servidor
+// Rota de login
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  const sql = 'SELECT * FROM usuarios WHERE email = ?';
+  db.query(sql, [email], async (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.send('Erro ao buscar usuário.');
+    }
+
+    if (results.length === 0) {
+      return res.send('Usuário não encontrado.');
+    }
+
+    const usuario = results[0];
+    const senhaCorreta = await bcrypt.compare(password, usuario.senha);
+
+    if (senhaCorreta) {
+      res.redirect('/dashboard/index.html');
+    } else {
+      res.send('Senha incorreta.');
+    }
+  });
+});
+
+// Iniciar o servidor
 app.listen(3000, () => {
   console.log('Servidor rodando em http://localhost:3000');
 });
